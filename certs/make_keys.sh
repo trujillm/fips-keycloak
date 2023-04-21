@@ -134,3 +134,6 @@ keytool -importkeystore -srckeystore node.jks -srcstoretype JKS -srcstorepass ${
 keytool -importkeystore -srckeystore trust.jks -srcstoretype JKS -srcstorepass ${PASS} \
 -destkeystore trust.bcfks -deststorepass ${PASS} -deststoretype BCFKS -providername BCFIPS \
 -provider org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider -providerpath ${DIR}/bc-fips-1.0.2.3.jar
+
+# Copies certs to files dir
+cp ca.pem ca.key ../files

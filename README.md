@@ -15,6 +15,8 @@ The automation will do the following:
 - oc cli installed
 - Logged into OC cluster via cli
 - Requried permissions sets to create k8's objects in project
+- keytool installed
+- openssl installed
 
 ## Setup
 Modify keycloak.yaml
