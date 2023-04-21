@@ -30,5 +30,5 @@ Modify keycloak.yaml
 | Description | Command |
 | ----------- | ------- |
 Install PostgreSQL | `oc -n <PROJECT NAME HERE> new-app -e POSTGRESQL_USER=admin -e POSTGRESQL_PASSWORD=password -e POSTGRESQL_DATABASE=keycloak --image-stream="openshift/postgresql:13-el7"`   
-Install Keycloak  | `oc process -f keycloak.yaml -p NAMESPACE=<PROJECT NAME HERE> | oc create -f -`
+Install Keycloak  | `oc process -f keycloak.yaml -p NAMESPACE=<PROJECT NAME HERE> \| oc create -f -`
 Remove all of setup | `oc delete keycloaks,routes,services,deployments -n <PROJECT NAME HERE> --all`
