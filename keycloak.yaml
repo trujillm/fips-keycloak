@@ -91,7 +91,7 @@ objects:
     annotations:
       description: Route for application's https service.
   spec:
-    host: "secure-fips-matrujil.apps.fips-key.2vn8.p1.openshiftapps.com"
+    host: "secure-fips-<Add PROJECT NAME HERE>.apps.fips-key.2vn8.p1.openshiftapps.com"
     to:
       name: secure-service
     tls:
