@@ -5,6 +5,7 @@
 This provides an easy automated way to deploy fips enabled keycloak on OCP via the operator.
 
 The automation will do the following:
+- Create needed certs
 - Create PostgreSQL Database
 - Install keycloak instance with FIPS enabled
 
