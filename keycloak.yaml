@@ -1,0 +1,139 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: keycloak-https
+  annotations:
+    iconClass: icon-sso
+    tags: keycloak
+    version: 999-SNAPSHOT
+    openshift.io/display-name: Keycloak
+    description: An example Keycloak server with HTTPS
+parameters:
+- displayName: Application Name
+  description: The name for the application.
+  name: APPLICATION_NAME
+  value: fips-test
+  required: true
+- displayName: Keycloak Administrator Username
+  description: Keycloak Server administrator username
+  name: KEYCLOAK_ADMIN
+  value: kcadmin
+  required: true
+- displayName: Keycloak Administrator Password
+  description: Keycloak Server administrator password
+  name: KEYCLOAK_ADMIN_PASSWORD
+  from: "[a-zA-Z0-9]{8}"
+  generate: expression
+  required: true
+- displayName: DB Vendor
+  description: DB vendor (H2, POSTGRES, MYSQL or MARIADB)
+  name: DB_VENDOR
+  value: H2
+  required: true
+- displayName: Custom http Route Hostname
+  description: 'Custom hostname for http service route. Leave blank for default hostname,
+    e.g.: <application-name>.<project>.<default-domain-suffix>'
+  name: HOSTNAME_HTTP
+  value: ''
+  required: false
+- displayName: Custom https Route Hostname
+  description: 'Custom hostname for https service route. Leave blank for default hostname,
+    e.g.: <application-name>.<project>.<default-domain-suffix>'
+  name: HOSTNAME_HTTPS
+  value: ''
+  required: false
+- displayName: Namespace used for DNS discovery
+  description: This namespace is a part of DNS query sent to Kubernetes API. This
+    query allows the DNS_PING protocol to extract cluster members. This parameter
+    might be removed once https://issues.jboss.org/browse/JGRP-2292 is implemented.
+  name: NAMESPACE
+  required: true
+objects:
+- kind: Service
+  apiVersion: v1
+  spec:
+    ports:
+    - port: 8443
+      targetPort: 8443
+    selector:
+      app: "keycloak"
+  metadata:
+    name: secure-service
+    labels:
+      application: "${APPLICATION_NAME}"
+    annotations:
+      description: The web server's https port.
+- kind: Service
+  apiVersion: v1
+  spec:
+    ports:
+    - port: 5432
+      targetPort: 5432
+      nodePort: 0
+      protocol: "TCP"
+      name: "postgresql"
+    selector:
+      deployment: "postgresql"
+  metadata:
+    name: secure-db-${APPLICATION_NAME}
+    labels:
+      application: "${APPLICATION_NAME}"
+    annotations:
+      description: The db server's port.
+- kind: Route
+  apiVersion: v1
+  id: "${APPLICATION_NAME}-https"
+  metadata:
+    name: secure-${APPLICATION_NAME}
+    labels:
+      application: "${APPLICATION_NAME}"
+    annotations:
+      description: Route for application's https service.
+  spec:
+    host: "secure-fips-matrujil.apps.fips-key.2vn8.p1.openshiftapps.com"
+    to:
+      name: secure-service
+    tls:
+      termination: passthrough
+- kind: Keycloak
+  apiVersion: k8s.keycloak.org/v2alpha1
+  metadata:
+    labels:
+      app: sso
+    name: fips-test
+    namespace: <Add PROJECT NAME HERE>
+  spec:
+    db:
+      usernameSecret:
+        key: username
+        name: db-secret
+      passwordSecret:
+        key: password
+        name: db-secret
+      port: 5432
+      vendor: postgres
+      host: postgresql
+      poolInitialSize: 2
+      poolMaxSize: 3
+      url: 'jdbc:postgresql://postgresql.<Add PROJECT NAME HERE>.svc.cluster.local:5432/keycloak'
+      poolMinSize: 2
+      database: keycloak
+    additionalOptions:
+      - name: health-enabled
+        value: 'false'
+    features:
+      enabled:
+        - fips
+    hostname:
+      #strict: false
+      hostname: secure-fips-<Add PROJECT NAME HERE>.apps.fips-key.2vn8.p1.openshiftapps.com
+    http:
+      tlsSecret: cluster-cert
+      httpPort: 8080
+      httpsPort: 8443
+    image: 'quay.io/matrujil/my-fips-keycloak:latest'
+    instances: 1
+    transaction:
+      xaEnabled: false
+    
