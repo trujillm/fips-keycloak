@@ -20,7 +20,7 @@ The automation will do the following:
 - openssl installed
 
 ## Setup
-Modify keycloak.yaml
+### Modify keycloak.yaml
 
 | spec | Description |
 | --- | --- |
@@ -32,7 +32,7 @@ Modify keycloak.yaml
 ## Usage
 | Description | Command |
 | ----------- | ------- |
-Install certs | `cd certs && ./make_keys.sh && cd ../`
+Create Image  | 1. Install certs: `cd certs && ./make_keys.sh && cd ../` <br> 2. Build image: `podman build --arch=x86_64 . -t my-fips-keycloak` <br> 3. Push Image `podman push my-fips-keycloak:latest quay.io/<YOUR USER  NAME HERE>/my-fips-keycloak:latest`
 Install PostgreSQL | `oc -n <PROJECT NAME HERE> new-app -e POSTGRESQL_USER=admin -e POSTGRESQL_PASSWORD=password -e POSTGRESQL_DATABASE=keycloak --image-stream="openshift/postgresql:13-el7"`   
 Install Keycloak  | `oc process -f keycloak.yaml -p NAMESPACE=<PROJECT NAME HERE> \| oc create -f -`
 Remove all of setup | `oc delete keycloaks,routes,services,deployments -n <PROJECT NAME HERE> --all`
