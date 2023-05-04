@@ -33,7 +33,7 @@ The automation will do the following:
 | Description | Command |
 | ----------- | ------- |
 Create Image  | 1. Install certs: `cd certs && ./make_keys.sh && cd ../` <br> 2. Build image: `podman build --ulimit nofile=16384:65536 --arch=x86_64 . -t my-fips-keycloak` <br> 3. Push Image `podman push my-fips-keycloak:latest quay.io/<YOUR USER  NAME HERE>/my-fips-keycloak:latest`
-Create cluster-cert secret  | 1. Retrieve cert `oc get secret -n openshift-ingress  fips-key-primary-cert-bundle-secret -o go-template='{{index .data "tls.crt"}}' \| base64 -d > tls.crt` <br> 2. Retrieve key `oc -n <YOUR PROJECT NAME HERE> create secret tls cluster-cert --cert=./tls.crt --key=./tls.key`
+Create cluster-cert secret  | 1. Retrieve cert `oc get secret -n openshift-ingress  fips-key-primary-cert-bundle-secret -o go-template='{{index .data "tls.crt"}}' \| base64 -d > tls.crt` <br> 2. Retrieve key `oc get secret -n openshift-ingress  fips-key-primary-cert-bundle-secret -o go-template='{{index .data "tls.key"}}' \| base64 -d > tls.key` <br> 3. Create secret `oc -n <YOUR PROJECT NAME HERE> create secret tls cluster-cert --cert=./tls.crt --key=./tls.key`
 Create db-secret | `oc -n <YOUR PROJECT NAME HERE>apply -f db-secret.yaml`
 Install PostgreSQL | `oc -n <PROJECT NAME HERE> new-app -e POSTGRESQL_USER=admin -e POSTGRESQL_PASSWORD=password -e POSTGRESQL_DATABASE=keycloak --image-stream="openshift/postgresql:13-el7"`   
 Install Keycloak  | `oc process -f keycloak.yaml -p NAMESPACE=<PROJECT NAME HERE> \| oc create -f -`
