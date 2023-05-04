@@ -98,7 +98,7 @@ keytool -deststorepass ${PASS} -noprompt  -import -file ca.pem -alias Certificat
 
 # Generate node certificates
 keytool -genkey -keyalg RSA -keysize 2048 -alias node -deststorepass ${PASS} -keystore node.jks -noprompt \
- -dname ${SERVER_DN} \
+ -dname "${SERVER_DN}" \
  -storepass ${PASS} \
  -keypass ${PASS}
 keytool -deststorepass ${PASS} -certreq -alias node -file node.csr -keystore node.jks
@@ -110,7 +110,7 @@ openssl pkcs12 -in node.p12 -out ca_odbc.pem -passin pass:${PASS} -nodes
 
 # Generate Client cerificates
 keytool -genkey -keyalg RSA -keysize 2048 -alias client -deststorepass ${PASS} -keystore client.jks -noprompt \
- -dname ${CLIENT_DN} \
+ -dname "${CLIENT_DN}" \
  -storepass ${PASS} \
  -keypass ${PASS}
 keytool -deststorepass ${PASS} -certreq -alias client -file client.csr -keystore client.jks
