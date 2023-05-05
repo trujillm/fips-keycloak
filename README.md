@@ -29,6 +29,10 @@ The automation will do the following:
 | keycloak db url | Need to match the database route we will install before running keycloak.yml
 | keycloak hostname | match Route host name
 
+### Modify db-secret.yaml
+
+Update `metadata.namespace` in `db-secret.yaml` to match the project name.
+
 ## Usage
 | Description | Command |
 | ----------- | ------- |
